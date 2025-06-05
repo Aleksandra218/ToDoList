@@ -1,3 +1,4 @@
+import java.sql.Array;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -24,7 +25,7 @@ public class Main {
             } else if (choice == 3) {
                 markAsComplected(sc, task, taskCount, completed);
             } else if (choice == 4) {
-
+                task = deleteTask(sc, task, taskCount);
             } else if (choice == 5) {
 
             } else if (choice == 6) {
@@ -32,6 +33,26 @@ public class Main {
             }
         }
 
+    }
+    private static String[] deleteTask(Scanner sc, String[] task, int taskCount) {
+        System.out.print("Введите номер задачи для удаления: ");
+        int numberTask = validNumberTask(sc, taskCount);
+        int indexToRemove = numberTask - 1; // индекс в массиве (0-based)
+        String[] beforeDeleteTask = Arrays.copyOfRange(task, 0, indexToRemove);; //от 0 до удаляемого, последний не входит
+        String[] afterDeleteTask = Arrays.copyOfRange(task, indexToRemove + 1, taskCount);;
+        String[] resultTask = new String[taskCount - 1];
+
+        // Копируем beforeDeleteTask
+        for (int i = 0; i < beforeDeleteTask.length; i++) {
+            resultTask[i] = beforeDeleteTask[i];
+        }
+
+// Копируем afterDeleteTask
+        for (int i = 0; i < afterDeleteTask.length; i++) {
+            resultTask[beforeDeleteTask.length + i] = afterDeleteTask[i]; // важно: beforeDeleteTask.length + i
+        }
+        System.out.println("Задача " + numberTask + " удалена!");
+        return resultTask;
     }
 
     private static void markAsComplected(Scanner sc, String[] task, int taskCount, boolean[] completed) {
