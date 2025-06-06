@@ -25,7 +25,8 @@ public class Main {
             } else if (choice == 3) {
                 markAsComplected(sc, task, taskCount, completed);
             } else if (choice == 4) {
-                task = deleteTask(sc, task, taskCount);
+                task = deleteTask(sc, task, completed, taskCount);
+                taskCount--;
             } else if (choice == 5) {
 
             } else if (choice == 6) {
@@ -34,34 +35,46 @@ public class Main {
         }
 
     }
-    private static String[] deleteTask(Scanner sc, String[] task, int taskCount) {
+    private static String[] deleteTask(Scanner sc, String[] tasks, boolean[] completed, int taskCount) {
         System.out.print("Введите номер задачи для удаления: ");
-        int numberTask = validNumberTask(sc, taskCount);
-        int indexToRemove = numberTask - 1; // индекс в массиве (0-based)
-        String[] beforeDeleteTask = Arrays.copyOfRange(task, 0, indexToRemove);; //от 0 до удаляемого, последний не входит
-        String[] afterDeleteTask = Arrays.copyOfRange(task, indexToRemove + 1, taskCount);;
-        String[] resultTask = new String[taskCount - 1];
+        int taskNumber = validNumberTask(sc, taskCount);
+        int indexToRemove = taskNumber - 1;
 
-        // Копируем beforeDeleteTask
-        for (int i = 0; i < beforeDeleteTask.length; i++) {
-            resultTask[i] = beforeDeleteTask[i];
+        // Создаём новый массив для задач
+        String[] newTasks = new String[taskCount - 1];
+
+        // 1. Копируем задачи до удаляемой
+        if (indexToRemove > 0) {
+            System.arraycopy(tasks, 0, newTasks, 0, indexToRemove);
         }
 
-// Копируем afterDeleteTask
-        for (int i = 0; i < afterDeleteTask.length; i++) {
-            resultTask[beforeDeleteTask.length + i] = afterDeleteTask[i]; // важно: beforeDeleteTask.length + i
+        // 2. Копируем задачи после удаляемой
+        int elementsAfter = taskCount - indexToRemove - 1;
+        if (elementsAfter > 0) {
+            System.arraycopy(tasks, indexToRemove + 1, newTasks, indexToRemove, elementsAfter);
         }
-        System.out.println("Задача " + numberTask + " удалена!");
-        return resultTask;
+
+        // 3. Обновляем массив completed
+        if (taskCount - 1 > 0) {  // Проверяем, что остались элементы
+            System.arraycopy(completed, 0, completed, 0, indexToRemove); // Копируем начало
+            if (indexToRemove < taskCount - 1) {
+                System.arraycopy(completed, indexToRemove + 1, completed, indexToRemove,
+                        taskCount - indexToRemove - 1);
+            }
+            completed[taskCount - 1] = false; // Очищаем последний элемент
+        }
+
+        System.out.println("Задача " + taskNumber + " и отметка удалены!");
+        return newTasks;
     }
 
     private static void markAsComplected(Scanner sc, String[] task, int taskCount, boolean[] completed) {
-        printAllTask(task, taskCount, completed); // выводим список задач
         if (taskCount == 0) { //если счетчик 0 то список пуст и завершаем метод
             System.out.println("Список задач пуст!");
             return;
         }
-        System.out.println("Введите номер задачи для отметки: ");
+        printAllTask(task, taskCount, completed); // выводим список задач
+        System.out.print("Введите номер задачи для отметки: ");
 
         int taskNumber = validNumberTask(sc, taskCount); //считываем валидный номер
 
@@ -97,7 +110,10 @@ public class Main {
         String[] newTask = Arrays.copyOf(task, taskCount); //
         System.out.println("Все задачи: "); //
         for (int i = 0; i < newTask.length; i++) { //
-            String status = completed[i] ? "\u001B[32m✓\u001B[0m" : "\u001B[31m✗\u001B[0m"; //
+            if(newTask[i] == null){
+                continue;
+            }
+            String status = completed[i] ? "\u001B[32m✔\u001B[0m" : "\u001B[31m✘\u001B[0m"; //
             System.out.println((i + 1) + ". " + status + " " + newTask[i]); //
         }
     }
