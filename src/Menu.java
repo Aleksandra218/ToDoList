@@ -1,53 +1,36 @@
 import java.util.Arrays;
-import java.util.Scanner;
- /*
- класс работает с пользователем выводит меню и взаимодействует с классом берет корректные данные из
- класса InputValidation и работает c ToDoList
 
-  */
 public class Menu {
-    private Scanner scanner;
+    private ToDoList toDoList; //создание переменной
     private InputValidation validator;
 
-    public Menu(Scanner scanner, InputValidation validator) {
-        this.scanner = scanner;
+    public Menu(ToDoList toDoList, InputValidation validator) { //создание переменной
+        this.toDoList = toDoList; //
         this.validator = validator;
     }
+
     public void run() {
         System.out.println("Добро пожаловать в консольный To Do List! ");
-//        while (true) {
-            printMenu();
-//
-//            if (taskCount >= 1) {
-//                completed = Arrays.copyOf(completed, taskCount);
-//            }
+        while (true) {
+            printMenu(); // печатаем меню
 
-            int choice = validator.readMenuChoice();
-//
-            if (choice == 1) {
-//                if (arrayTask.length == taskCount) {
-//                    arrayTask = Arrays.copyOf(arrayTask, taskCount + 1);
-//                }
-//                taskCount = addTask(sc, arrayTask, taskCount);
-//                if (taskCount > 1) {
-//                    arrayTask = sort(arrayTask, taskCount);
-//                }
+            int choiceMenu = InputValidation.validNumberMenu(); // выбор меню
+
+            if (choiceMenu == 1) {
+                toDoList.addTask();
+            } else if (choiceMenu == 2) {
+                toDoList.printAllTask();
+            } else if (choiceMenu == 3) {
+                toDoList.markAsComplected();
+            } else if (choiceMenu == 4) {
+                toDoList.deleteTask();
+            } else if (choiceMenu == 5) {
+                toDoList.findTask();
+            } else if (choiceMenu == 6) {
+                System.out.println("Программа завершена! Всего доброго!");
+                return;
             }
-//            } else if (choice == 2) {
-//                printAllTask(arrayTask, taskCount, completed);
-//            } else if (choice == 3) {
-//                markAsComplected(sc, arrayTask, taskCount, completed);
-//            } else if (choice == 4) {
-//                int index = findIndexToRemove(sc, taskCount);
-//                arrayTask = deleteTask(arrayTask, completed, taskCount, index);
-//                completed = deleteComplected(completed, taskCount, index);
-//                taskCount--;
-//            } else if (choice == 5) {
-//                findTask(sc, arrayTask, completed, taskCount);
-//            } else if (choice == 6) {
-//                System.out.println("Программа завершена! Всего доброго!");
-//            }
-//        }
+        }
     }
 
     private static void printMenu() {
@@ -60,3 +43,5 @@ public class Menu {
                 "6. Выход\n");
     }
 }
+
+
